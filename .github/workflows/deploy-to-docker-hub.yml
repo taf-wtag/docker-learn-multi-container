@@ -1,0 +1,34 @@
+name: Deploy images to docker hub
+
+on:
+    push:
+        branches:
+            - 'master'
+env:
+    DOCKER_USERNAME : ${{ secrets.DOCKER_USERNAME }}
+    DOCKER_PASSWORD : ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+    deploy-to-hub:
+        runs-on: 'ubuntu-latest'
+
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Build images
+              run: |
+                docker build -f ./client/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/react-client ./client
+                docker build -f ./client/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/nginx ./nginx
+                docker build -f ./client/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/express-api ./server
+                docker build -f ./client/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/worker ./worker
+            - name: Login to docker hub
+              run: docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD }}
+            
+            - name: Push images to docker hub
+              run: |
+                 docker push ${{ env.DOCKER_USERNAME }}/react-client ./client
+                 docker push ${{ env.DOCKER_USERNAME }}/nginx ./nginx
+                 docker push ${{ env.DOCKER_USERNAME }}/express-api ./server
+                 docker push ${{ env.DOCKER_USERNAME }}/worker ./worker
+            - run: echo "Images deployed succesfully"
