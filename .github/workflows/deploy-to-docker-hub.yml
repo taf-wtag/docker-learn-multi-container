@@ -19,9 +19,9 @@ jobs:
             - name: Build images
               run: |
                 docker build -f ./client/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/react-client ./client
-                docker build -f ./client/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/nginx ./nginx
-                docker build -f ./client/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/express-api ./server
-                docker build -f ./client/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/worker ./worker
+                docker build -f ./nginx/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/nginx ./nginx
+                docker build -f ./server/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/express-api ./server
+                docker build -f ./worker/Dockerfile.dev -t ${{ env.DOCKER_USERNAME }}/worker ./worker
             - name: Login to docker hub
               run: docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD }}
             
